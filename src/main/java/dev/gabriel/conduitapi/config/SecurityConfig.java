@@ -1,11 +1,13 @@
 package dev.gabriel.conduitapi.config;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import dev.gabriel.conduitapi.security.Jwks;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,9 +37,10 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    final RsaKeyProperties rsaKeys;
     final UserDetailsService userDetailsService;
     final Environment environment;
+
+    RSAKey rsaKey;
 
     final String[] PUBLIC_MATCHERS = {
             "/h2-console/**",
@@ -89,15 +92,21 @@ public class SecurityConfig {
         return new ProviderManager(authProvider);
     }
 
+
     @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();
+    public JWKSource<SecurityContext> jwkSource() {
+        rsaKey = Jwks.generateRsa();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return ((jwkSelector, securityContext) -> jwkSelector.select(jwkSet));
     }
 
     @Bean
-    JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet((jwk)));
+    JwtDecoder jwtDecoder() throws JOSEException {
+        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwks) {
         return new NimbusJwtEncoder(jwks);
     }
 
