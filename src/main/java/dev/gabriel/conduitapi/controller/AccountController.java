@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "users")
 public class AccountController {
 
     final AccountService service;
@@ -23,7 +25,7 @@ public class AccountController {
     final AuthenticationManager authenticationManager;
 
 
-    @PostMapping
+    @PostMapping("users")
     public ResponseEntity<AuthUserDTO> createAccount(@RequestBody NewAccountDTO newAccountDTO) {
         var account = service.addAccount(newAccountDTO);
 
@@ -43,7 +45,7 @@ public class AccountController {
         return ResponseEntity.created(uri).body(authUserDTO);
     }
 
-    @PostMapping("/login")
+    @PostMapping("users/login")
     public ResponseEntity<AuthUserDTO> login(@RequestBody LoginUserDTO loginUserDTO) {
 
         var auth = authenticationManager.authenticate(
@@ -59,6 +61,11 @@ public class AccountController {
         var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio());
 
         return ResponseEntity.ok(authUserDTO);
+    }
+
+    @GetMapping("user")
+    public ResponseEntity<AuthUserDTO> getCurrentUser() {
+        return ResponseEntity.ok(service.getCurrentUser());
     }
 
 }
