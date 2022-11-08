@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -24,8 +25,18 @@ public class TagController {
 
     @GetMapping
     public ResponseEntity<TagListDTO> getAllTags() {
-        var tagListDTO = new TagListDTO(service.getAllTagValues());
-        return ResponseEntity.ok(tagListDTO);
+        return ResponseEntity.ok(new TagListDTO(service.getAllTagValues()));
+    }
+
+    @GetMapping("{tagId}")
+    public ResponseEntity<Tag> getTagById(@PathVariable Long tagId) {
+        return ResponseEntity.ok(service.findTagById(tagId));
+    }
+
+    @DeleteMapping("{tagId}")
+    public ResponseEntity<Object> deleteTag(@PathVariable Long tagId) {
+        service.deleteTagById(tagId);
+        return ResponseEntity.ok().build();
     }
 
     private record TagListDTO(Set<String> tags) {

@@ -6,6 +6,7 @@ import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,5 +22,15 @@ public class TagService {
 
     public Tag createTag(TagDTO dto) {
         return repository.save(new Tag(dto.tagValue()));
+    }
+
+    public Tag findTagById(Long id) {
+        return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public void deleteTagById(Long tagId) {
+        var tag = findTagById(tagId);
+        tag.getArticles().forEach(article -> article.removeTagById(tagId));
+        repository.delete(tag);
     }
 }
