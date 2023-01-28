@@ -57,7 +57,7 @@ public class AccountController {
                 )
         );
 
-        var account = ((UserSS) auth.getPrincipal()).getAccount();
+        var account = ((UserSS) auth.getPrincipal()).account();
 
         var token = tokenService.generateToken(auth);
 
