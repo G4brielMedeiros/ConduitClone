@@ -29,4 +29,6 @@ public class Account {
 
     String bio;
 
+    String image;
+
 }

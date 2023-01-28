@@ -43,7 +43,7 @@ public class AccountController {
         var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(account.getId()).toUri();
 
-        var authUserDTO = new AuthUserDTO(newAccountDTO.email(), token, newAccountDTO.username(), null);
+        var authUserDTO = new AuthUserDTO(newAccountDTO.email(), token, newAccountDTO.username(), null, null);
 
         return ResponseEntity.created(uri).body(authUserDTO);
     }
@@ -57,11 +57,11 @@ public class AccountController {
                 )
         );
 
-        var account = ((UserSS) auth.getPrincipal()).getAccount();
+        var account = ((UserSS) auth.getPrincipal()).account();
 
         var token = tokenService.generateToken(auth);
 
-        var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio());
+        var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio(), account.getImage());
 
         return ResponseEntity.ok(authUserDTO);
     }
