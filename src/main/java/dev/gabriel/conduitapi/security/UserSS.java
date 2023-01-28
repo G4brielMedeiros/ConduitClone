@@ -1,7 +1,6 @@
 package dev.gabriel.conduitapi.security;
 
 import dev.gabriel.conduitapi.domain.Account;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@AllArgsConstructor
 public record UserSS(@Getter Account account) implements UserDetails {
 
     @Override

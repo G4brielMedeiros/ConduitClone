@@ -30,7 +30,7 @@ public class AccountService {
     public AuthUserDTO getCurrentUser() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var account = repository.findAccountByEmail(auth.getName()).orElseThrow();
-        return new AuthUserDTO(auth.getName(), tokenService.generateToken(auth), account.getUsername(), account.getBio());
+        return new AuthUserDTO(auth.getName(), tokenService.generateToken(auth), account.getUsername(), account.getBio(), account.getImage());
     }
 
 }
