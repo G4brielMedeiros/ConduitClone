@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class AccountController {
 
 
     @PostMapping("users")
-    public ResponseEntity<AuthUserDTO> createAccount(@RequestBody NewAccountDTO newAccountDTO) {
+    public ResponseEntity<AuthUserDTO> createAccount(@Valid @RequestBody NewAccountDTO newAccountDTO) {
         var account = service.addAccount(newAccountDTO);
 
         var auth = authenticationManager.authenticate(
