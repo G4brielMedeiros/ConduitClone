@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
@@ -51,26 +49,6 @@ public class DatabaseConfig {
 
         tagRepository.saveAll(Set.of(tag, tag2, tag3));
         articleRepository.saveAll(Set.of(article, article2));
-
-        tagRepository.flush();
-        articleRepository.flush();
-
-//        tagRepository.findTagByTagValue("Cool").ifPresent(tag1 -> {
-//            System.out.println("tag1 = " + tag1);
-//            tagRepository.deleteById(tag1.getId());
-//        });
-
-//        Set<Tag> tags = article.getTags().stream().filter(taggy -> taggy.getId() != 1).collect(Collectors.toSet());
-//
-////        article.setTags(tags);
-//
-//        articleRepository.save(article);
-//        articleRepository.flush();
-//
-//        tagRepository.delete(tag);
-//        tagRepository.flush();
-
-
 
         return true;
     }

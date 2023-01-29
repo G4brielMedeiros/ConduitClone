@@ -14,6 +14,10 @@ import java.util.UUID;
  */
 public class Jwks {
 
+    private Jwks() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static RSAKey generateRsa() {
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();

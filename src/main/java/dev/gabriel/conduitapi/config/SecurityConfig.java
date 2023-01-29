@@ -39,15 +39,15 @@ public class SecurityConfig {
 
     RSAKey rsaKey;
 
-    final String[] PUBLIC_MATCHERS = {
+    static final String[] PUBLIC_MATCHERS = {
             "/h2-console/**",
     };
 
-    final String[] PUBLIC_MATCHERS_POST = {
+    static final String[] PUBLIC_MATCHERS_POST = {
             "/users/**"
     };
 
-    final String[] PUBLIC_MATCHERS_GET = {
+    static final String[] PUBLIC_MATCHERS_GET = {
             "/tags/**",
             "/token",
             "/users/login"

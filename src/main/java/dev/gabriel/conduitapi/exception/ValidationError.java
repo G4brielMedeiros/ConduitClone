@@ -14,7 +14,7 @@ public class ValidationError extends StandardError implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public List<FieldErrorMessage> errors = new ArrayList<>();
+    private final List<FieldErrorMessage> errors = new ArrayList<>();
 
     public ValidationError(Integer status, String msg, Long timeStamp) {
         super(status, msg, timeStamp);
