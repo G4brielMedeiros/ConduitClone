@@ -1,12 +1,12 @@
 package dev.gabriel.conduitapi.service;
 
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.TagDTO;
+import dev.gabriel.conduitapi.dto.NewTagDTO;
 import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,17 +20,20 @@ public class TagService {
         return repository.findAll().stream().map(Tag::getTagValue).collect(Collectors.toSet());
     }
 
-    public Tag createTag(TagDTO dto) {
+    public Tag createTag(NewTagDTO dto) {
         return repository.save(new Tag(dto.tagValue()));
     }
 
-    public Tag findTagById(Long id) {
-        return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public Optional<Tag> findTagById(Long id) {
+        return repository.findById(id);
     }
 
     public void deleteTagById(Long tagId) {
-        var tag = findTagById(tagId);
-        tag.getArticles().forEach(article -> article.removeTagById(tagId));
-        repository.delete(tag);
+
+        findTagById(tagId).ifPresent(tag -> {
+            tag.getArticles().forEach(article -> article.removeTagById(tagId));
+            repository.delete(tag);
+        });
+
     }
 }

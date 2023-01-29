@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @RestController
@@ -68,11 +67,8 @@ public class AccountController {
 
     @GetMapping("user")
     public ResponseEntity<AuthUserDTO> getCurrentUser() {
-        try {
-            return ResponseEntity.ok(service.getCurrentUser());
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return service.getCurrentUser()
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
 }

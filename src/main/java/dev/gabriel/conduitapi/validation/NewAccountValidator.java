@@ -24,13 +24,11 @@ public class NewAccountValidator implements ConstraintValidator<ValidNewAccount,
 
         List<FieldErrorMessage> errorMessages = new ArrayList<>();
 
-        repository.findAccountByEmail(newAccountDTO.email()).ifPresent(account ->
-                errorMessages.add(new FieldErrorMessage("email", "Email already in use."))
-        );
+        if (repository.existsAccountByEmail(newAccountDTO.email()))
+            errorMessages.add(new FieldErrorMessage("email", "Email already in use."));
 
-        repository.findAccountByUsername(newAccountDTO.username()).ifPresent(account ->
-                errorMessages.add(new FieldErrorMessage("username", "Username already in use."))
-        );
+        if (repository.existsAccountByUsername(newAccountDTO.username()))
+            errorMessages.add(new FieldErrorMessage("username", "Username already in use."));
 
         errorMessages.forEach(fieldErrorMessage -> {
             context.disableDefaultConstraintViolation();

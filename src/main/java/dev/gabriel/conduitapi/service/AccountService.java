@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class AccountService {
@@ -20,17 +22,16 @@ public class AccountService {
 
     public Account addAccount(NewAccountDTO dto) {
         var account = new Account(
-                dto.username(),
-                dto.email(),
+                dto.username(), dto.email(),
                 passwordEncoder.encode(dto.password())
         );
         return repository.save(account);
     }
 
-    public AuthUserDTO getCurrentUser() {
+    public Optional<AuthUserDTO> getCurrentUser() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        var account = repository.findAccountByEmail(auth.getName()).orElseThrow();
-        return new AuthUserDTO(auth.getName(), tokenService.generateToken(auth), account.getUsername(), account.getBio(), account.getImage());
+        return repository.findAccountByEmail(auth.getName())
+                .map(account -> new AuthUserDTO(account, tokenService.generateToken(auth)));
     }
 
 }

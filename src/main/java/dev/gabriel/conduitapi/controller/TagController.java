@@ -1,7 +1,7 @@
 package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.TagDTO;
+import dev.gabriel.conduitapi.dto.NewTagDTO;
 import dev.gabriel.conduitapi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class TagController {
     final TagService service;
 
     @PostMapping
-    public ResponseEntity<Tag> createTag(@RequestBody TagDTO dto) {
+    public ResponseEntity<Tag> createTag(@RequestBody NewTagDTO dto) {
         var tag = service.createTag(dto);
         return ResponseEntity.ok(tag);
     }
@@ -29,7 +29,7 @@ public class TagController {
 
     @GetMapping("{tagId}")
     public ResponseEntity<Tag> getTagById(@PathVariable Long tagId) {
-        return ResponseEntity.ok(service.findTagById(tagId));
+        return service.findTagById(tagId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{tagId}")
