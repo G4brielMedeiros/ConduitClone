@@ -1,14 +1,13 @@
 package dev.gabriel.conduitapi.security;
 
 import dev.gabriel.conduitapi.domain.Account;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public record UserSS(@Getter Account account) implements UserDetails {
+public record UserSS(Account account) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
