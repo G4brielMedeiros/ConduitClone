@@ -22,9 +22,9 @@ import javax.validation.Valid;
 @RestController
 public class AccountController {
 
-    final AccountService service;
-    final TokenService tokenService;
-    final AuthenticationManager authenticationManager;
+    private final AccountService service;
+    private final TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
 
 
     @PostMapping("users")

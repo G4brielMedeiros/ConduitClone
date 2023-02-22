@@ -3,6 +3,7 @@ package dev.gabriel.conduitapi.service;
 import dev.gabriel.conduitapi.domain.Account;
 import dev.gabriel.conduitapi.dto.AuthUserDTO;
 import dev.gabriel.conduitapi.dto.NewAccountDTO;
+import dev.gabriel.conduitapi.dto.ProfileDTO;
 import dev.gabriel.conduitapi.repository.AccountRepository;
 import dev.gabriel.conduitapi.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class AccountService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         return repository.findAccountByEmail(auth.getName())
                 .map(account -> new AuthUserDTO(account, tokenService.generateToken(auth)));
+    }
+
+    public Optional<ProfileDTO> getProfileByUsername(String username) {
+        // TODO: 29/01/2023 implement following
+        return repository.findAccountByUsername(username)
+                .map(account -> new ProfileDTO(account, false));
     }
 
 }

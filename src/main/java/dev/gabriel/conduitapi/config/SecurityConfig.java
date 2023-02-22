@@ -50,7 +50,8 @@ public class SecurityConfig {
     static final String[] PUBLIC_MATCHERS_GET = {
             "/tags/**",
             "/token",
-            "/users/login"
+            "/users/login",
+            "/profiles/**"
     };
 
     @Bean
