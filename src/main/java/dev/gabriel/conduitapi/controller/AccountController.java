@@ -1,8 +1,10 @@
 package dev.gabriel.conduitapi.controller;
 
+import dev.gabriel.conduitapi.domain.Account;
 import dev.gabriel.conduitapi.dto.AuthUserDTO;
 import dev.gabriel.conduitapi.dto.LoginUserDTO;
 import dev.gabriel.conduitapi.dto.NewAccountDTO;
+import dev.gabriel.conduitapi.dto.UpdateAccountDTO;
 import dev.gabriel.conduitapi.security.UserSS;
 import dev.gabriel.conduitapi.service.AccountService;
 import dev.gabriel.conduitapi.service.security.TokenService;
@@ -12,24 +14,25 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
 
-    private final AccountService service;
+    private final AccountService accountService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
-
     @PostMapping("users")
     public ResponseEntity<AuthUserDTO> createAccount(@Valid @RequestBody NewAccountDTO newAccountDTO) {
-        var account = service.addAccount(newAccountDTO);
+        var account = accountService.addAccount(newAccountDTO);
 
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -37,12 +40,20 @@ public class AccountController {
                 )
         );
 
+        var uri = getAccountUri(account);
         var token = tokenService.generateToken(auth);
-
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(account.getId()).toUri();
-
         var authUserDTO = new AuthUserDTO(newAccountDTO.email(), token, newAccountDTO.username(), null, null);
+
+        return ResponseEntity.created(uri).body(authUserDTO);
+    }
+
+    @PutMapping("user")
+    public ResponseEntity<AuthUserDTO> updateAccount(@RequestBody UpdateAccountDTO updateAccountDTO) {
+        Account account = accountService.updateAccount(updateAccountDTO);
+
+        var uri = getAccountUri(account);
+        var token = tokenService.generateToken();
+        var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio(), account.getImage());
 
         return ResponseEntity.created(uri).body(authUserDTO);
     }
@@ -57,9 +68,7 @@ public class AccountController {
         );
 
         var account = ((UserSS) auth.getPrincipal()).account();
-
         var token = tokenService.generateToken(auth);
-
         var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio(), account.getImage());
 
         return ResponseEntity.ok(authUserDTO);
@@ -67,8 +76,16 @@ public class AccountController {
 
     @GetMapping("user")
     public ResponseEntity<AuthUserDTO> getCurrentUser() {
-        return service.getCurrentUser()
-                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return accountService.getCurrentAccount()
+                .map(account ->
+                        ResponseEntity.ok(new AuthUserDTO(account, tokenService.generateToken()))
+                )
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    private static URI getAccountUri(Account account) {
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(account.getId()).toUri();
     }
 
 }

@@ -1,5 +1,6 @@
 package dev.gabriel.conduitapi.service.security;
 
+import dev.gabriel.conduitapi.facade.AuthFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,8 @@ public class TokenService {
 
     private final JwtEncoder jwtEncoder;
 
+    private final AuthFacade authFacade;
+
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
@@ -32,6 +35,10 @@ public class TokenService {
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateToken() {
+        return generateToken(authFacade.getAuthentication());
     }
 
 }
