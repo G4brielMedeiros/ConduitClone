@@ -48,7 +48,7 @@ public class AccountController {
     }
 
     @PutMapping("user")
-    public ResponseEntity<AuthUserDTO> updateAccount(@RequestBody UpdateAccountDTO updateAccountDTO) {
+    public ResponseEntity<AuthUserDTO> updateAccount(@Valid @RequestBody UpdateAccountDTO updateAccountDTO) {
         Account account = accountService.updateAccount(updateAccountDTO);
 
         var uri = getAccountUri(account);

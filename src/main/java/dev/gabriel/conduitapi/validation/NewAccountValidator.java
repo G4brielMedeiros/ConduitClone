@@ -14,7 +14,7 @@ public class NewAccountValidator implements ConstraintValidator<ValidNewAccount,
 
     public static final String PASSWORD_POLICY = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
     public static final String USERNAME_POLICY = "^[a-zA-Z0-9_-]{8,}$";
-    final AccountRepository repository;
+    private final AccountRepository accountRepository;
 
     @Override
     public void initialize(ValidNewAccount constraintAnnotation) {
@@ -29,14 +29,14 @@ public class NewAccountValidator implements ConstraintValidator<ValidNewAccount,
         if (newAccountDTO.email() == null) {
             errorMessages.add(new FieldErrorMessage(
                     "email",
-                    "Email must not be null."
+                    "Email must not be null"
             ));
         }
 
         if (newAccountDTO.username() == null || !newAccountDTO.username().matches(USERNAME_POLICY)) {
             errorMessages.add(new FieldErrorMessage(
                     "username",
-                    "Username must only contain letters, numbers, hyphens and dashes."
+                    "Username must only contain letters, numbers, hyphens and dashes"
             ));
         }
 
@@ -46,15 +46,15 @@ public class NewAccountValidator implements ConstraintValidator<ValidNewAccount,
                     "Password must be at least 8 characters long, " +
                             "contain at least one digit, " +
                             "one lowercase letter, " +
-                            "and one uppercase letter."
+                            "and one uppercase letter"
             ));
         }
 
-        if (errorMessages.isEmpty() && repository.existsAccountByEmail(newAccountDTO.email()))
-            errorMessages.add(new FieldErrorMessage("email", "already in use."));
+        if (errorMessages.isEmpty() && accountRepository.existsAccountByEmail(newAccountDTO.email()))
+            errorMessages.add(new FieldErrorMessage("email", "already in use"));
 
-        if (errorMessages.isEmpty() && repository.existsAccountByUsername(newAccountDTO.username()))
-            errorMessages.add(new FieldErrorMessage("username", "already in use."));
+        if (errorMessages.isEmpty() && accountRepository.existsAccountByUsername(newAccountDTO.username()))
+            errorMessages.add(new FieldErrorMessage("username", "already in use"));
 
         errorMessages.forEach(fieldErrorMessage -> {
             context.disableDefaultConstraintViolation();
