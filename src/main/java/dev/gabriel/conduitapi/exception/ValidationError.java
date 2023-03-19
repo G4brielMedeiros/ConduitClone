@@ -19,8 +19,8 @@ public class ValidationError extends StandardError implements Serializable {
 
     private final Map<String, List<String>> errors = new HashMap<>();
 
-    public ValidationError(String msg) {
-        super(HttpStatus.UNPROCESSABLE_ENTITY.value(), msg);
+    public ValidationError(String message) {
+        super(HttpStatus.UNPROCESSABLE_ENTITY, message);
     }
 
     public void addError(FieldError error) {

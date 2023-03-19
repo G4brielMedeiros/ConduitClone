@@ -15,11 +15,13 @@ public class StandardError implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer status;
-    private final String msg;
+    private final String message;
+    private final String details;
     private final Long timeStamp = System.currentTimeMillis();
 
-    public StandardError(HttpStatus status) {
-        this.msg = status.getReasonPhrase();
+    public StandardError(HttpStatus status, String details) {
+        this.message = status.getReasonPhrase();
         this.status = status.value();
+        this.details = details;
     }
 }

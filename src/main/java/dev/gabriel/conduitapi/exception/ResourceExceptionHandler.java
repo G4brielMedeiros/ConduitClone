@@ -3,6 +3,7 @@ package dev.gabriel.conduitapi.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +17,10 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> globalException() {
 
-        StandardError error = new StandardError(HttpStatus.INTERNAL_SERVER_ERROR);
+        StandardError error = new StandardError(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An error occurred during this opperation"
+        );
         return ResponseEntity.internalServerError().body(error);
     }
 
@@ -35,8 +39,8 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> constraintError() {
 
         StandardError error = new StandardError(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An error occured attempting to persist the given entity."
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An error occured attempting to persist the given entity"
         );
 
         return ResponseEntity.internalServerError().body(error);
@@ -45,7 +49,20 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> badHttp() {
 
-        StandardError error = new StandardError(HttpStatus.BAD_REQUEST);
+        StandardError error = new StandardError(
+                HttpStatus.BAD_REQUEST,
+                "Badly formatted JSON payload"
+        );
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<StandardError> unsupportedMethod(HttpRequestMethodNotSupportedException exception) {
+
+        StandardError error = new StandardError(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                exception.getMessage()
+        );
+        return ResponseEntity.status(error.getStatus()).body(error);
     }
 }
