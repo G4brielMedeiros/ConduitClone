@@ -21,7 +21,7 @@ public record UserSS(Account account) implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getEmail();
+        return account.getUsername();
     }
 
     @Override
