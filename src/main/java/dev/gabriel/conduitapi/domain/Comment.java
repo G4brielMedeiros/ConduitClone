@@ -7,24 +7,24 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Entity
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NonNull
     @Column(nullable = false)
-    String body;
+    private String body;
 
     @NonNull
     @Column(nullable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Setter(AccessLevel.NONE)
-    Instant updatedAt;
+    private Instant updatedAt;
 
 }

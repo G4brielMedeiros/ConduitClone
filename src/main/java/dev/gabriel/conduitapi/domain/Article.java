@@ -10,30 +10,30 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Entity
 public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NonNull
     @Column(nullable = false, unique = true)
-    String slug;
+    private String slug;
 
     @NonNull
     @Column(nullable = false)
-    String title;
+    private String title;
 
     @NonNull
     @Column(nullable = false)
-    String description;
+    private String description;
 
     @NonNull
     @Column(nullable = false)
-    String body;
+    private String body;
 
     @NonNull
     @Column(nullable = false)

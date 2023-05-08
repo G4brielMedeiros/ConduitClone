@@ -34,8 +34,8 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    final UserDetailsService userDetailsService;
-    final Environment environment;
+    private final UserDetailsService userDetailsService;
+    private final Environment environment;
 
     RSAKey rsaKey;
 
@@ -103,8 +103,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwks) {
-        return new NimbusJwtEncoder(jwks);
+    JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        return new NimbusJwtEncoder(jwkSource);
     }
 
 }

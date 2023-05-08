@@ -51,11 +51,10 @@ public class AccountController {
     public ResponseEntity<AuthUserDTO> updateAccount(@Valid @RequestBody UpdateAccountDTO updateAccountDTO) {
         Account account = accountService.updateAccount(updateAccountDTO);
 
-        var uri = getAccountUri(account);
         var token = tokenService.generateToken();
         var authUserDTO = new AuthUserDTO(account.getEmail(), token, account.getUsername(), account.getBio(), account.getImage());
 
-        return ResponseEntity.created(uri).body(authUserDTO);
+        return ResponseEntity.ok(authUserDTO);
     }
 
     @PostMapping("users/login")
@@ -76,11 +75,9 @@ public class AccountController {
 
     @GetMapping("user")
     public ResponseEntity<AuthUserDTO> getCurrentUser() {
-        return accountService.getCurrentAccount()
-                .map(account ->
-                        ResponseEntity.ok(new AuthUserDTO(account, tokenService.generateToken()))
-                )
-                .orElse(ResponseEntity.notFound().build());
+        Account currentAccount = accountService.getCurrentAccount();
+        return ResponseEntity.ok(new AuthUserDTO(currentAccount, tokenService.generateToken()));
+
     }
 
     private static URI getAccountUri(Account account) {

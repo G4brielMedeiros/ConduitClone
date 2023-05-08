@@ -9,18 +9,18 @@ import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Entity
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NonNull
     @Column(unique = true, nullable = false)
-    String tagValue;
+    private String tagValue;
 
 
     @JsonIgnore
