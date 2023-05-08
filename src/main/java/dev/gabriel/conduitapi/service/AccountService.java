@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -50,9 +49,14 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Could not find currently signed-in account."));
     }
 
-    public Optional<ProfileDTO> getProfileByUsername(String username) {
+    public Account getAccountByUsername(String username) {
         return accountRepository.findAccountByUsername(username)
-                .map(account -> new ProfileDTO(account, getCurrentAccount().getFollowers().contains(account)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Account with username '%s' not found", username)));
+    }
+
+    public ProfileDTO getProfileByUsername(String username) {
+        Account account = getAccountByUsername(username);
+        return new ProfileDTO(account, getCurrentAccount().getFollowing().contains(account));
     }
 
     public void followAccount(Account accountToFollow) {
