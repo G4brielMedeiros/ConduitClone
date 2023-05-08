@@ -30,9 +30,7 @@ public class AccountService {
     }
 
     public Account updateAccount(UpdateAccountDTO dto) {
-        var currentAccount = getCurrentAccount().orElseThrow(
-                () -> new EntityNotFoundException("Could not find currently signed-in Account.")
-        );
+        var currentAccount = getCurrentAccount();
 
         if (dto.email() != null)
             currentAccount.setEmail(dto.email());
@@ -47,15 +45,41 @@ public class AccountService {
 
     }
 
-    public Optional<Account> getCurrentAccount() {
-        var auth = authFacade.getAuthentication();
-        return accountRepository.findAccountByUsername(auth.getName());
+    public Account getCurrentAccount() {
+        return accountRepository.findAccountByUsername(authFacade.getAuthentication().getName())
+                .orElseThrow(() -> new EntityNotFoundException("Could not find currently signed-in account."));
     }
 
     public Optional<ProfileDTO> getProfileByUsername(String username) {
-        // TODO: 29/01/2023 implement following
         return accountRepository.findAccountByUsername(username)
-                .map(account -> new ProfileDTO(account, false));
+                .map(account -> new ProfileDTO(account, getCurrentAccount().getFollowers().contains(account)));
+    }
+
+    public void followAccount(Account accountToFollow) {
+
+        Account currentAccount = getCurrentAccount();
+
+        if (!accountToFollow.getFollowers().contains(currentAccount)) {
+            accountToFollow.getFollowers().add(currentAccount);
+        }
+
+        if (!currentAccount.getFollowing().contains(accountToFollow)) {
+            currentAccount.getFollowing().add(accountToFollow);
+        }
+
+        accountRepository.save(accountToFollow);
+        accountRepository.save(currentAccount);
+    }
+
+    public void unfollowAccount(Account accountToFollow) {
+
+        Account currentAccount = getCurrentAccount();
+
+        accountToFollow.getFollowers().remove(currentAccount);
+        currentAccount.getFollowing().remove(accountToFollow);
+
+        accountRepository.save(accountToFollow);
+        accountRepository.save(currentAccount);
     }
 
 }

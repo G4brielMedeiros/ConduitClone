@@ -3,32 +3,45 @@ package dev.gabriel.conduitapi.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Entity
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NonNull
     @Column(unique = true, nullable = false)
-    String username;
+    private String username;
 
     @NonNull
     @Column(unique = true, nullable = false)
-    String email;
+    private String email;
 
     @NonNull
     @Column(nullable = false)
-    String password;
+    private String password;
 
-    String bio;
+    private String bio;
 
-    String image;
+    private String image;
+
+    @ManyToMany
+    @JoinTable(
+            name = "account_followers",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private List<Account> followers = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "followers")
+    private List<Account> following = new ArrayList<>();
 
 }
