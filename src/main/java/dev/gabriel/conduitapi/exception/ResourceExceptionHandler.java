@@ -8,7 +8,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
 
 @ControllerAdvice
@@ -16,53 +20,47 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> globalException() {
-
-        StandardError error = new StandardError(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An error occurred during this opperation"
-        );
-        return ResponseEntity.internalServerError().body(error);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> validationError(MethodArgumentNotValidException exception) {
-
-        ValidationError validationError = new ValidationError("Validation Error");
-
-        exception.getBindingResult().getFieldErrors()
-                .forEach(validationError::addError);
-
-        return ResponseEntity.unprocessableEntity().body(validationError);
+        return internalServerError("An unknown error occurred during this operation");
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<StandardError> constraintError() {
-
-        StandardError error = new StandardError(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An error occured attempting to persist the given entity"
-        );
-
-        return ResponseEntity.internalServerError().body(error);
+        return internalServerError("An error occurred attempting to persist the given entity");
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> badHttp() {
+        return badRequest("Invalid JSON");
+    }
 
-        StandardError error = new StandardError(
-                HttpStatus.BAD_REQUEST,
-                "Badly formatted JSON payload"
-        );
-        return ResponseEntity.badRequest().body(error);
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity<Void> entityNotFound() {
+        return notFound().build();
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<StandardError> unsupportedMethod(HttpRequestMethodNotSupportedException exception) {
+        return methodNotAllowed(exception.getMessage());
+    }
 
-        StandardError error = new StandardError(
-                HttpStatus.METHOD_NOT_ALLOWED,
-                exception.getMessage()
-        );
-        return ResponseEntity.status(error.getStatus()).body(error);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> validationError(MethodArgumentNotValidException exception) {
+        return unprocessableEntity()
+                .body(new ValidationError("Validation Error", exception.getBindingResult().getFieldErrors()));
+    }
+
+    private static ResponseEntity<StandardError> badRequest(String msg) {
+        return ResponseEntity.badRequest()
+                .body(new StandardError(HttpStatus.BAD_REQUEST, msg));
+    }
+
+    private static ResponseEntity<StandardError> internalServerError(String msg) {
+        return ResponseEntity.internalServerError()
+                .body(new StandardError(HttpStatus.INTERNAL_SERVER_ERROR, msg));
+    }
+
+    private static ResponseEntity<StandardError> methodNotAllowed(String msg) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(new StandardError(HttpStatus.METHOD_NOT_ALLOWED, msg));
     }
 }
