@@ -1,5 +1,6 @@
 package dev.gabriel.conduitapi.config;
 
+import dev.gabriel.conduitapi.domain.Account;
 import dev.gabriel.conduitapi.domain.Article;
 import dev.gabriel.conduitapi.domain.Tag;
 import dev.gabriel.conduitapi.repository.AccountRepository;
@@ -8,6 +9,7 @@ import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.Set;
@@ -16,9 +18,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DatabaseConfig {
 
-    final AccountRepository accountRepository;
-    final ArticleRepository articleRepository;
-    final TagRepository tagRepository;
+    private final AccountRepository accountRepository;
+    private final ArticleRepository articleRepository;
+    private final TagRepository tagRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public boolean instantiateDatabase() {
@@ -49,6 +52,21 @@ public class DatabaseConfig {
 
         tagRepository.saveAll(Set.of(tag, tag2, tag3));
         articleRepository.saveAll(Set.of(article, article2));
+
+
+        var gabriel = new Account();
+        gabriel.setBio("The Creator");
+        gabriel.setUsername("Creator");
+        gabriel.setEmail("gabriel@gmail.com");
+        gabriel.setPassword(passwordEncoder.encode("Password123#"));
+
+        var lethicia = new Account();
+        lethicia.setBio("The Ducky");
+        lethicia.setUsername("Ducky");
+        lethicia.setEmail("lethicia@gmail.com");
+        lethicia.setPassword(passwordEncoder.encode("Password123#"));
+
+        accountRepository.saveAll(Set.of(gabriel, lethicia));
 
         return true;
     }
