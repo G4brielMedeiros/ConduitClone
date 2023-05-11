@@ -56,34 +56,22 @@ public class AccountService {
 
     public ProfileDTO getProfileByUsername(String username) {
         Account account = getAccountByUsername(username);
+        return getProfileByAccount(account);
+    }
+
+    public ProfileDTO getProfileByAccount(Account account) {
         return new ProfileDTO(account, getCurrentAccount().getFollowing().contains(account));
     }
 
-    public void followAccount(Account accountToFollow) {
-
+    public boolean followAccount(Account accountToFollow) {
         Account currentAccount = getCurrentAccount();
-
-        if (!accountToFollow.getFollowers().contains(currentAccount)) {
-            accountToFollow.getFollowers().add(currentAccount);
-        }
-
-        if (!currentAccount.getFollowing().contains(accountToFollow)) {
-            currentAccount.getFollowing().add(accountToFollow);
-        }
-
-        accountRepository.save(accountToFollow);
-        accountRepository.save(currentAccount);
+        accountToFollow.getFollowers().add(currentAccount);
+        return accountRepository.save(accountToFollow).getFollowers().contains(currentAccount);
     }
 
-    public void unfollowAccount(Account accountToFollow) {
-
+    public boolean unfollowAccount(Account accountToFollow) {
         Account currentAccount = getCurrentAccount();
-
         accountToFollow.getFollowers().remove(currentAccount);
-        currentAccount.getFollowing().remove(accountToFollow);
-
-        accountRepository.save(accountToFollow);
-        accountRepository.save(currentAccount);
+        return accountRepository.save(accountToFollow).getFollowers().contains(currentAccount);
     }
-
 }

@@ -28,15 +28,15 @@ public class ProfileController {
     public ResponseEntity<ProfileDTO> followProfile(@PathVariable String username) {
 
         Account accountToFollow = accountService.getAccountByUsername(username);
-        accountService.followAccount(accountToFollow);
-        return ok(new ProfileDTO(accountToFollow, true));
+        boolean following = accountService.followAccount(accountToFollow);
+        return ok(new ProfileDTO(accountToFollow, following));
     }
 
     @DeleteMapping("profiles/{username}/follow")
     public ResponseEntity<ProfileDTO> unfollowProfile(@PathVariable String username) {
 
         Account accountToUnfollow = accountService.getAccountByUsername(username);
-        accountService.unfollowAccount(accountToUnfollow);
-        return ok(new ProfileDTO(accountToUnfollow, false));
+        boolean following = accountService.unfollowAccount(accountToUnfollow);
+        return ok(new ProfileDTO(accountToUnfollow, following));
     }
 }
