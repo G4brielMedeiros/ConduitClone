@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor(force = true)
+@Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 @Entity
 public class Article {
 
@@ -42,6 +44,10 @@ public class Article {
     @Setter(AccessLevel.NONE)
     Instant updatedAt;
 
+    @ManyToOne
+    private Account author;
+
+
     @ManyToMany
     @JoinTable(name = "tagged_article",
             joinColumns =
@@ -51,10 +57,6 @@ public class Article {
             @JoinColumn(name = "tag_id", referencedColumnName = "id",
                     nullable = false, updatable = false))
     private Set<Tag> tags = new HashSet<>();
-
-    public void addTag(Tag tag) {
-        tags.add(tag);
-    }
 
     public void removeTagById(Long tagId) {
         setTags(tags.stream().filter(tag -> !tag.getId().equals(tagId)).collect(Collectors.toSet()));

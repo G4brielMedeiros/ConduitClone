@@ -1,4 +1,4 @@
 package dev.gabriel.conduitapi.dto;
 
-public record NewTagDTO(Long id, String tagValue) {
+public record NewTagDTO(String tagValue) {
 }
