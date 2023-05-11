@@ -1,10 +1,10 @@
 package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Account;
-import dev.gabriel.conduitapi.dto.AuthUserDTO;
-import dev.gabriel.conduitapi.dto.LoginUserDTO;
-import dev.gabriel.conduitapi.dto.NewAccountDTO;
-import dev.gabriel.conduitapi.dto.UpdateAccountDTO;
+import dev.gabriel.conduitapi.dto.account.AuthUserDTO;
+import dev.gabriel.conduitapi.dto.account.LoginUserDTO;
+import dev.gabriel.conduitapi.dto.account.NewAccountDTO;
+import dev.gabriel.conduitapi.dto.account.UpdateAccountDTO;
 import dev.gabriel.conduitapi.security.UserSS;
 import dev.gabriel.conduitapi.service.AccountService;
 import dev.gabriel.conduitapi.service.security.TokenService;
@@ -58,7 +58,7 @@ public class AccountController {
     }
 
     @PostMapping("users/login")
-    public ResponseEntity<AuthUserDTO> login(@RequestBody LoginUserDTO loginUserDTO) {
+    public ResponseEntity<AuthUserDTO> login(@Valid @RequestBody LoginUserDTO loginUserDTO) {
 
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

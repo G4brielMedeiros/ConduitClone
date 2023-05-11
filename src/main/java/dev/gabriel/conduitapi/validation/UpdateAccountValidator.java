@@ -1,6 +1,6 @@
 package dev.gabriel.conduitapi.validation;
 
-import dev.gabriel.conduitapi.dto.UpdateAccountDTO;
+import dev.gabriel.conduitapi.dto.account.UpdateAccountDTO;
 import dev.gabriel.conduitapi.repository.AccountRepository;
 import dev.gabriel.conduitapi.service.AccountService;
 import lombok.RequiredArgsConstructor;

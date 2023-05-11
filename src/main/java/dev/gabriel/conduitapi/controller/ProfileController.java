@@ -1,7 +1,7 @@
 package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Account;
-import dev.gabriel.conduitapi.dto.ProfileDTO;
+import dev.gabriel.conduitapi.dto.account.ProfileDTO;
 import dev.gabriel.conduitapi.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

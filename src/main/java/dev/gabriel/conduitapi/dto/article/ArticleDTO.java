@@ -1,11 +1,11 @@
-package dev.gabriel.conduitapi.dto;
+package dev.gabriel.conduitapi.dto.article;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import dev.gabriel.conduitapi.dto.account.ProfileDTO;
 import lombok.Builder;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 @Builder

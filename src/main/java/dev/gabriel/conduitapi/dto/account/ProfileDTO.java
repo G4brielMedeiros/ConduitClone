@@ -1,4 +1,4 @@
-package dev.gabriel.conduitapi.dto;
+package dev.gabriel.conduitapi.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;

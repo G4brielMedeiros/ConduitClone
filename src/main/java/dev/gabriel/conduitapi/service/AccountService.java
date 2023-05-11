@@ -1,9 +1,9 @@
 package dev.gabriel.conduitapi.service;
 
 import dev.gabriel.conduitapi.domain.Account;
-import dev.gabriel.conduitapi.dto.NewAccountDTO;
-import dev.gabriel.conduitapi.dto.ProfileDTO;
-import dev.gabriel.conduitapi.dto.UpdateAccountDTO;
+import dev.gabriel.conduitapi.dto.account.NewAccountDTO;
+import dev.gabriel.conduitapi.dto.account.ProfileDTO;
+import dev.gabriel.conduitapi.dto.account.UpdateAccountDTO;
 import dev.gabriel.conduitapi.facade.AuthFacade;
 import dev.gabriel.conduitapi.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;

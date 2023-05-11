@@ -1,7 +1,7 @@
 package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.NewTagDTO;
+import dev.gabriel.conduitapi.dto.tag.NewTagDTO;
 import dev.gabriel.conduitapi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

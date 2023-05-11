@@ -1,14 +1,13 @@
 package dev.gabriel.conduitapi.service;
 
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.NewTagDTO;
+import dev.gabriel.conduitapi.dto.tag.NewTagDTO;
 import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

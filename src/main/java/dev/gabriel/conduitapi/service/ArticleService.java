@@ -2,7 +2,7 @@ package dev.gabriel.conduitapi.service;
 
 import dev.gabriel.conduitapi.domain.Article;
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.NewArticleDTO;
+import dev.gabriel.conduitapi.dto.article.NewArticleDTO;
 import dev.gabriel.conduitapi.repository.ArticleRepository;
 import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;

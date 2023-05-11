@@ -2,8 +2,8 @@ package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Article;
 import dev.gabriel.conduitapi.domain.Tag;
-import dev.gabriel.conduitapi.dto.ArticleDTO;
-import dev.gabriel.conduitapi.dto.NewArticleDTO;
+import dev.gabriel.conduitapi.dto.article.ArticleDTO;
+import dev.gabriel.conduitapi.dto.article.NewArticleDTO;
 import dev.gabriel.conduitapi.service.AccountService;
 import dev.gabriel.conduitapi.service.ArticleService;
 import lombok.RequiredArgsConstructor;
