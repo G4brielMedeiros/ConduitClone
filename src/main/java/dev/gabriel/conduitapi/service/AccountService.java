@@ -7,6 +7,7 @@ import dev.gabriel.conduitapi.dto.account.UpdateAccountDTO;
 import dev.gabriel.conduitapi.facade.AuthFacade;
 import dev.gabriel.conduitapi.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,11 @@ public class AccountService {
 
     public Account getCurrentAccount() {
         return accountRepository.findAccountByUsername(authFacade.getAuthentication().getName())
-                .orElseThrow(() -> new EntityNotFoundException("Could not find currently signed-in account."));
+                .orElseThrow(() -> new BadCredentialsException("Could not find currently signed-in account"));
+    }
+
+    public boolean isCurrentUserAnon() {
+        return authFacade.getAuthentication().getName().equals("anonymousUser");
     }
 
     public Account getAccountByUsername(String username) {
@@ -60,7 +65,9 @@ public class AccountService {
     }
 
     public ProfileDTO getProfileByAccount(Account account) {
-        return new ProfileDTO(account, getCurrentAccount().getFollowing().contains(account));
+        return isCurrentUserAnon() ?
+                new ProfileDTO(account, false) :
+                new ProfileDTO(account, getCurrentAccount().getFollowing().contains(account));
     }
 
     public boolean followAccount(Account accountToFollow) {
