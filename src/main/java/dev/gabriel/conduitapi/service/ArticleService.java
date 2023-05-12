@@ -29,17 +29,17 @@ public class ArticleService {
         Instant now = Instant.now();
 
         return articleRepository.save(Article.builder()
-                .title(dto.title())
+                .title(dto.title().trim())
                 .body(dto.body())
                 .description(dto.description())
                 .createdAt(now)
                 .updatedAt(now)
-                .slug(toSlug(dto.title(), ""))
+                .slug(toSlug(dto.title().trim()))
                 .author(accountService.getCurrentAccount())
                 .tags(dto.tagList().stream()
                         .map(tagValue -> tagRepository
                                 .findTagByTagValue(tagValue)
-                                .orElseGet(() -> tagRepository.save(new Tag(tagValue))))
+                                .orElseGet(() -> tagRepository.save(new Tag(tagValue.trim()))))
                         .collect(Collectors.toSet()))
                 .build()
         );
@@ -50,19 +50,23 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Article with slug '%s' not found", slug)));
     }
 
-    private String toSlug(String title, String suffix) {
+    private String toSlug(String title) {
         String slug = title
                 .toLowerCase()
                 .replaceAll("[^a-z0-9 ]", "")
-                .replace(" ", "_")
-                + suffix;
+                .replace(" ", "_");
 
-        return articleRepository.existsArticleBySlug(slug) ? toSlug(title, makeSlugSuffix()) : slug;
+        return articleRepository.existsArticleBySlug(slug) ? toSlugWithSuffix(slug, makeSlugSuffix()) : slug;
+    }
+
+    private String toSlugWithSuffix(String preSlug, String suffix) {
+        String slug = preSlug + suffix;
+        return articleRepository.existsArticleBySlug(slug) ? toSlugWithSuffix(preSlug, makeSlugSuffix()) : slug;
     }
 
     private static String makeSlugSuffix() {
         String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder("-");
+        StringBuilder sb = new StringBuilder("_#");
         IntStream.range(0, 10).forEach(i -> sb.append(chars.charAt(random.nextInt(chars.length()))));
         return sb.toString();
     }
