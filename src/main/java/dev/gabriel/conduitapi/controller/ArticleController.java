@@ -7,6 +7,7 @@ import dev.gabriel.conduitapi.service.AccountService;
 import dev.gabriel.conduitapi.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "articles")
+@RequestMapping("articles")
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -34,6 +35,11 @@ public class ArticleController {
     @GetMapping("{slug}")
     public ResponseEntity<ArticleDTO> fetchArticleBySlug(@PathVariable String slug) {
         return ok(getArticleDTO(articleService.getArticleBySlug(slug)));
+    }
+
+    @DeleteMapping("{slug}")
+    public void deleteArticleBySlug(@PathVariable String slug) {
+        articleService.deleteArticleBySlug(slug);
     }
 
     private ArticleDTO getArticleDTO(Article article) {
