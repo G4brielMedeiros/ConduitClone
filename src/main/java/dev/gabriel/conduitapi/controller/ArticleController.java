@@ -1,20 +1,22 @@
 package dev.gabriel.conduitapi.controller;
 
 import dev.gabriel.conduitapi.domain.Article;
-import dev.gabriel.conduitapi.domain.Tag;
 import dev.gabriel.conduitapi.dto.article.ArticleDTO;
 import dev.gabriel.conduitapi.dto.article.NewArticleDTO;
 import dev.gabriel.conduitapi.service.AccountService;
 import dev.gabriel.conduitapi.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,19 +28,15 @@ public class ArticleController {
 
     @PostMapping
     public ResponseEntity<ArticleDTO> createArticle(@Valid @RequestBody NewArticleDTO dto) {
-        Article article = articleService.createArticle(dto);
+        return ok(getArticleDTO(articleService.createArticle(dto)));
+    }
 
-        ArticleDTO articleDTO = ArticleDTO.builder()
-                .slug(article.getSlug())
-                .title(article.getTitle())
-                .description(article.getDescription())
-                .body(article.getBody())
-                .tagList(article.getTags().stream().map(Tag::getTagValue).collect(Collectors.toSet()))
-                .createdAt(article.getCreatedAt())
-                .updatedAt(article.getUpdatedAt())
-                .author(accountService.getProfileByAccount(article.getAuthor()))
-                .build();
+    @GetMapping("{slug}")
+    public ResponseEntity<ArticleDTO> fetchArticleBySlug(@PathVariable String slug) {
+        return ok(getArticleDTO(articleService.getArticleBySlug(slug)));
+    }
 
-        return ResponseEntity.ok(articleDTO);
+    private ArticleDTO getArticleDTO(Article article) {
+        return ArticleDTO.from(article, accountService.isCurrentAccountFollowing(article.getAuthor()), false, 0);
     }
 }

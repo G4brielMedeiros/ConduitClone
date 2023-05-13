@@ -50,10 +50,6 @@ public class AccountService {
                 .orElseThrow(() -> new BadCredentialsException("Could not find currently signed-in account"));
     }
 
-    public boolean isCurrentUserAnon() {
-        return authFacade.getAuthentication().getName().equals("anonymousUser");
-    }
-
     public Account getAccountByUsername(String username) {
         return accountRepository.findAccountByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Account with username '%s' not found", username)));
@@ -64,10 +60,16 @@ public class AccountService {
         return getProfileByAccount(account);
     }
 
+    public boolean isCurrentUserLoggedIn() {
+        return !authFacade.getAuthentication().getName().equals("anonymousUser");
+    }
+
     public ProfileDTO getProfileByAccount(Account account) {
-        return isCurrentUserAnon() ?
-                new ProfileDTO(account, false) :
-                new ProfileDTO(account, getCurrentAccount().getFollowing().contains(account));
+                return ProfileDTO.from(account, isCurrentAccountFollowing(account));
+    }
+
+    public boolean isCurrentAccountFollowing(Account following) {
+        return isCurrentUserLoggedIn() && getCurrentAccount().getFollowing().contains(following);
     }
 
     public boolean followAccount(Account accountToFollow) {

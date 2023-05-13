@@ -66,7 +66,7 @@ public class ArticleService {
 
     private static String makeSlugSuffix() {
         String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder("_#");
+        StringBuilder sb = new StringBuilder("__");
         IntStream.range(0, 10).forEach(i -> sb.append(chars.charAt(random.nextInt(chars.length()))));
         return sb.toString();
     }
