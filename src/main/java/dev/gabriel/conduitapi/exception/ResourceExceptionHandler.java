@@ -3,6 +3,7 @@ package dev.gabriel.conduitapi.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,6 +44,13 @@ public class ResourceExceptionHandler {
     public ResponseEntity<Void> entityNotFound() {
         return notFound().build();
     }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<StandardError> accessDenied(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new StandardError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+    }
+
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<StandardError> unsupportedMethod(HttpRequestMethodNotSupportedException exception) {

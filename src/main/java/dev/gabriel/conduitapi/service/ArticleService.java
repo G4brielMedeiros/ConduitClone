@@ -1,11 +1,13 @@
 package dev.gabriel.conduitapi.service;
 
+import dev.gabriel.conduitapi.domain.Account;
 import dev.gabriel.conduitapi.domain.Article;
 import dev.gabriel.conduitapi.domain.Tag;
 import dev.gabriel.conduitapi.dto.article.NewArticleDTO;
 import dev.gabriel.conduitapi.repository.ArticleRepository;
 import dev.gabriel.conduitapi.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -45,6 +47,17 @@ public class ArticleService {
         );
     }
 
+    public void deleteArticleBySlug(String slug) {
+        Account currentAccount = accountService.getCurrentAccount();
+        Article article = getArticleBySlug(slug);
+
+        if (article.getAuthor().equals(currentAccount))
+            articleRepository.delete(getArticleBySlug(slug));
+        else
+            throw new AccessDeniedException(String.format("Account '%s' is not allowed to delete Article '%s'",
+                    currentAccount.getUsername(), slug));
+    }
+
     public Article getArticleBySlug(String slug) {
         return articleRepository.findArticleBySlug(slug)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Article with slug '%s' not found", slug)));
@@ -66,7 +79,7 @@ public class ArticleService {
 
     private static String makeSlugSuffix() {
         String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder("_#");
+        StringBuilder sb = new StringBuilder("__");
         IntStream.range(0, 10).forEach(i -> sb.append(chars.charAt(random.nextInt(chars.length()))));
         return sb.toString();
     }

@@ -29,7 +29,7 @@ public class ProfileController {
 
         Account accountToFollow = accountService.getAccountByUsername(username);
         boolean following = accountService.followAccount(accountToFollow);
-        return ok(new ProfileDTO(accountToFollow, following));
+        return ok(ProfileDTO.from(accountToFollow, following));
     }
 
     @DeleteMapping("profiles/{username}/follow")
@@ -37,6 +37,6 @@ public class ProfileController {
 
         Account accountToUnfollow = accountService.getAccountByUsername(username);
         boolean following = accountService.unfollowAccount(accountToUnfollow);
-        return ok(new ProfileDTO(accountToUnfollow, following));
+        return ok(ProfileDTO.from(accountToUnfollow, following));
     }
 }

@@ -51,7 +51,8 @@ public class SecurityConfig {
             "/tags/**",
             "/token",
             "/users/login",
-            "/profiles/**"
+            "/profiles/**",
+            "/articles/**"
     };
 
     @Bean
