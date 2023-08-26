@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,6 +40,7 @@ public class ArticleService {
                 .updatedAt(now)
                 .slug(toSlug(dto.title().trim()))
                 .author(accountService.getCurrentAccount())
+                .favoriteAccounts(Set.of())
                 .tags(dto.tagList().stream()
                         .map(tagValue -> tagRepository
                                 .findTagByTagValue(tagValue)
@@ -61,6 +64,22 @@ public class ArticleService {
     public Article getArticleBySlug(String slug) {
         return articleRepository.findArticleBySlug(slug)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Article with slug '%s' not found", slug)));
+    }
+
+    public Article favoriteArticle(String slug) {
+        Article article = articleRepository.findArticleBySlug(slug)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Article with slug '%s' not found", slug)));
+
+        article.getFavoriteAccounts().add(accountService.getCurrentAccount());
+        return articleRepository.save(article);
+    }
+
+    public Article unfavoriteArticle(String slug) {
+        Article article = articleRepository.findArticleBySlug(slug)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Article with slug '%s' not found", slug)));
+
+        article.getFavoriteAccounts().remove(accountService.getCurrentAccount());
+        return articleRepository.save(article);
     }
 
     private String toSlug(String title) {

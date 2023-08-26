@@ -72,6 +72,10 @@ public class AccountService {
         return isCurrentUserLoggedIn() && getCurrentAccount().getFollowing().contains(following);
     }
 
+    public boolean isAccountFollowing(Account following, Account follower) {
+        return follower.getFollowing().contains(following);
+    }
+
     public boolean followAccount(Account accountToFollow) {
         Account currentAccount = getCurrentAccount();
         accountToFollow.getFollowers().add(currentAccount);

@@ -10,4 +10,8 @@ public record ProfileDTO(String username, String bio, String image, boolean foll
     public static ProfileDTO from(Account account, boolean following) {
         return new ProfileDTO(account.getUsername(), account.getBio(), account.getImage(), following);
     }
+
+    public static ProfileDTO from(Account account) {
+        return new ProfileDTO(account.getUsername(), account.getBio(), account.getImage(), false);
+    }
 }

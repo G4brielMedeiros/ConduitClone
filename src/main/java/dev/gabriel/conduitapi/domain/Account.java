@@ -1,19 +1,14 @@
 package dev.gabriel.conduitapi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -53,4 +48,8 @@ public class Account {
 
     @ManyToMany(mappedBy = "followers")
     private Set<Account> following;
+
+    @JsonIgnore
+    @ManyToMany( mappedBy = "favoriteAccounts", fetch = FetchType.LAZY)
+    private Set<Article> favoriteArticles = new HashSet<>();
 }

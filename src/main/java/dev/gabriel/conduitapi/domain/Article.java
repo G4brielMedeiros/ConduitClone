@@ -47,7 +47,6 @@ public class Article {
     @ManyToOne
     private Account author;
 
-
     @ManyToMany
     @JoinTable(name = "tagged_article",
             joinColumns =
@@ -57,6 +56,16 @@ public class Article {
             @JoinColumn(name = "tag_id", referencedColumnName = "id",
                     nullable = false, updatable = false))
     private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "favorited_article",
+            joinColumns =
+            @JoinColumn(name = "favorite_article_id", referencedColumnName = "id",
+                    nullable = false, updatable = false),
+            inverseJoinColumns =
+            @JoinColumn(name = "favorite_account_id", referencedColumnName = "id",
+                    nullable = false, updatable = false))
+    private Set<Account> favoriteAccounts = new HashSet<>();
 
     public void removeTagById(Long tagId) {
         setTags(tags.stream().filter(tag -> !tag.getId().equals(tagId)).collect(Collectors.toSet()));

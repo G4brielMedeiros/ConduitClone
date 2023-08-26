@@ -24,7 +24,7 @@ public record ArticleDTO(
         int favoritesCount,
         ProfileDTO author
 ) {
-    public static ArticleDTO from(Article article, boolean following, boolean favorited, int favoritesCount) {
+    public static ArticleDTO from(Article article, boolean following, boolean favorited) {
         return new ArticleDTO(
                 article.getSlug(),
                 article.getTitle(),
@@ -34,8 +34,23 @@ public record ArticleDTO(
                 article.getCreatedAt(),
                 article.getUpdatedAt(),
                 favorited,
-                favoritesCount,
+                article.getFavoriteAccounts().size(),
                 ProfileDTO.from(article.getAuthor(), following)
+        );
+    }
+
+    public static ArticleDTO from(Article article) {
+        return new ArticleDTO(
+                article.getSlug(),
+                article.getTitle(),
+                article.getDescription(),
+                article.getBody(),
+                article.getTags().stream().map(Tag::getTagValue).collect(Collectors.toSet()),
+                article.getCreatedAt(),
+                article.getUpdatedAt(),
+                false,
+                article.getFavoriteAccounts().size(),
+                ProfileDTO.from(article.getAuthor())
         );
     }
 }
